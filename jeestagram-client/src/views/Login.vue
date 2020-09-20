@@ -1,13 +1,16 @@
 <template>
   <div class="login-page">
     <header>
-      <h3>JEE<span>STAGRAM</span></h3>
+      <h3>
+        JEE
+        <span>STAGRAM</span>
+      </h3>
       <h4>Login</h4>
     </header>
     <main class="form-group">
       <input type="text" v-model="email" placeholder="Email" />
       <input type="password" v-model="password" placeholder="Password" />
-      <button class="login-btn">Log in</button>
+      <button class="login-btn" @click="login">Log in</button>
     </main>
     <footer>
       <p>
@@ -19,14 +22,34 @@
 </template>
 
 <script>
+// import { response } from "express";
 export default {
   name: "login",
   data() {
     return {
       email: "",
-      password: "",
+      password: ""
     };
   },
+  methods: {
+    login() {
+      let api_url = this.$store.state.api_url;
+      if (this.email == "" || this.password == "")
+        return alert("Please fill in all fields.");
+      this.$http
+        .post(api_url + "user/login", {
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          localStorage.setItem("jwt", response.data.token);
+          console.log("Token: ", localStorage.getItem("jwt"));
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }
 };
 </script>
 
